@@ -4,7 +4,6 @@ import os
 import sys
 import webbrowser
 
-from wikipedia import exceptions
 try:
     from tkinter import scrolledtext
     from tkinter import *
@@ -17,6 +16,7 @@ except (ImportError,ModuleNotFoundError):
     os.system("pip install tk-tools")
 try:
     import wikipedia
+    from wikipedia import exceptions
 except (ImportError,ModuleNotFoundError):
     os.system("pip install wikipedia")
 class black_wikipedia(Tk):

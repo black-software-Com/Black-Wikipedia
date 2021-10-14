@@ -37,6 +37,8 @@ class black_wikipedia(Tk):
         filemenu = Menu(menu,tearoff=0)
         aboutmenu = Menu(menu,tearoff=0)
         themefile = Menu(menu,tearoff=0)
+        historyfile = Menu(menu,tearoff=0)
+        helpfile = Menu(menu,tearoff=0)
         filemenu.add_command(label='New',accelerator="Ctrl+N",command=self.new)
         filemenu.add_command(label='Open',accelerator="Ctrl+O",command=self.open_f)
         filemenu.add_command(label='Close All',accelerator='Ctrl+F4',command=filemenu.destroy)
@@ -49,10 +51,14 @@ class black_wikipedia(Tk):
         themefile.add_radiobutton(label='Light',command=self.light,value="light")
         themefile.add_separator()
         themefile.add_radiobutton(label='Costumize',command=self.costumize,value="costumize")
+        historyfile.add_command(label='history',accelerator='Ctrl+H',command=self.history)
         # themefile.add_radiobutton(label='',command='',value='')
+        helpfile.add_command(label='help',command=self.help)
         menu.add_cascade(label='File',menu=filemenu)
         menu.add_cascade(label='About',menu=aboutmenu)
         menu.add_cascade(label='Theme',menu=themefile)
+        menu.add_cascade(label='History',menu=historyfile)
+        menu.add_cascade(label='Help',menu=helpfile)
         self.config(menu=menu)
 
         label_b = Label(self,text='Black Wikipedia',font=("None",25),bg='white',fg='black')
@@ -61,7 +67,6 @@ class black_wikipedia(Tk):
         label_s.place(bordermode=INSIDE,x=65,y=80)
         search_b = Entry(self,width=25,borderwidth=3)
         search_b.place(bordermode=OUTSIDE,x=128,y=80)
-
         self.search_button = Button(self,text='Search',width=9,height=3,command=self.start)
         self.search_button.place(bordermode=OUTSIDE,x=160,y=120)
         self.exit_button = Button(self,text='Exit',width=9,height=3,command=self.ext)
@@ -72,6 +77,7 @@ class black_wikipedia(Tk):
         self.bind("<F1>",lambda x: self.dev_2(x))
         self.bind("<Control-F4>",lambda x: self.close_all_2(x))
         self.bind("<F2>",lambda x: self.black_2(x))
+        self.bind("<Control-h>",lambda x: self.history_2(x))
         self.bind("<Control-o>",lambda x: self.open_f_2(x))
         self.bind("<Control-n>",lambda x: self.new_3(x))
         self.photo = PhotoImage(file = './Scr/black.png')
@@ -79,14 +85,14 @@ class black_wikipedia(Tk):
         self.mainloop()
     def clear_history(self):
         search_b.delete(0,END)
-        history_f = open("history.txt","w")
-        history_f.write(" ")
-        history_f.close()
+        file_h = open("./Core/history.txt","w").close()
     def do_popup(self,event):
         try:
             m.tk_popup(event.x_root, event.y_root)
         finally:
             m.grab_release()
+    def help(self):
+        webbrowser.open_new_tab('https://black-software-com.github.io/Black-Help/')
     def cut_text(self):
         label.event_generate(("<<Cut>>"))
     def copy_text(self):
@@ -262,6 +268,28 @@ class black_wikipedia(Tk):
         txt['state'] = 'normal'
         txt.insert(END,str(file.read()))
         window.mainloop()
+    def history(self):
+        file_h = open("./Core/history.txt","r").read()
+        window = Tk()
+        window.title('Black-Wikipedia/History')
+        sc = ScrolledText(window)
+        sc.pack()
+        sc.insert(END,file_h)
+        sc['state'] = 'disabled'
+        window.geometry("400x300")
+        window.resizable(0,0)
+        window.mainloop()
+    def history_2(self,x):
+        file_h = open("./Core/history.txt","r").read()
+        window = Tk()
+        window.title('Black-Wikipedia/History')
+        sc = ScrolledText(window)
+        sc.pack()
+        sc.insert(END,file_h)
+        sc['state'] = 'disabled'
+        window.geometry("400x300")
+        window.resizable(0,0)
+        window.mainloop()
     def open_f_2(self,x):
         global window,i,file,txt
         file = filedialog.askopenfile(title='Select File',mode="r+")
@@ -361,13 +389,13 @@ class black_wikipedia(Tk):
             r = wikipedia.summary(search_b.get(),sentences=1000)
             txt2.insert(END,str(r))
             history_f_2 = open("./Core/history.txt","a")
-            history_f_2.write(str(search_b.get()))
+            history_f_2.write(f'{search_b.get()}\n')
             history_f_2.close()
             txt2['state'] = 'disabled'
             window.config(menu=menu)
             window.bind("<Control-s>",lambda x: self.save_4(x))
             window.bind("<Control-o>",lambda x: self.open_f_3(x))
-            window.bind("<Control-w",window.destroy)
+            window.bind("<Control-w>",window.destroy)
             window.mainloop()
         except wikipedia.exceptions.WikipediaException:
             print(False)
@@ -383,7 +411,6 @@ class black_wikipedia(Tk):
             window.minsize(300,300)
             menu = Menu(window)
             filemenu = Menu(menu,tearoff=0)
-            filemenu.add_command(label='New',accelerator='Ctrl+N',command=self.new)
             filemenu.add_command(label='Save',accelerator='Ctrl+S',command=self.save_2)
             filemenu.add_command(label='Open',accelerator='Ctrl+O',command=self.open_f)
             filemenu.add_command(label='Close All',accelerator='Ctrl+W',command=window.destroy)
@@ -395,14 +422,13 @@ class black_wikipedia(Tk):
             r = wikipedia.summary(search_b.get(),sentences=1000)
             txt2.insert(END,str(r))
             history_f_3 = open("./Core/history.txt","a")
-            history_f_3.write(str(search_b.get()))
+            history_f_3.write(f'{search_b.get()}\n')
             history_f_3.close()
             txt2['state'] = 'disabled'
             window.config(menu=menu)
-            window.bind("<Control-n>",lambda x: self.new_3)
             window.bind("<Control-s>",lambda x: self.save_4(x))
             window.bind("<Control-o>",lambda x: self.open_f_3(x))
-            window.bind("<Control-w",window.destroy)
+            window.bind("<Control-w>",window.destroy)
 
             window.mainloop()
         except wikipedia.exceptions.WikipediaException:

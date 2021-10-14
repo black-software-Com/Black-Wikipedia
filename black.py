@@ -38,6 +38,7 @@ class black_wikipedia(Tk):
         aboutmenu = Menu(menu,tearoff=0)
         themefile = Menu(menu,tearoff=0)
         historyfile = Menu(menu,tearoff=0)
+        donatefile = Menu(menu,tearoff=0)
         helpfile = Menu(menu,tearoff=0)
         filemenu.add_command(label='New',accelerator="Ctrl+N",command=self.new)
         filemenu.add_command(label='Open',accelerator="Ctrl+O",command=self.open_f)
@@ -53,12 +54,15 @@ class black_wikipedia(Tk):
         themefile.add_radiobutton(label='Costumize',command=self.costumize,value="costumize")
         historyfile.add_command(label='history',accelerator='Ctrl+H',command=self.history)
         # themefile.add_radiobutton(label='',command='',value='')
+        donatefile.add_command(label='donate',accelerator='Ctrl+D',command=self.donate)
         helpfile.add_command(label='help',command=self.help)
         menu.add_cascade(label='File',menu=filemenu)
         menu.add_cascade(label='About',menu=aboutmenu)
         menu.add_cascade(label='Theme',menu=themefile)
         menu.add_cascade(label='History',menu=historyfile)
+        menu.add_cascade(label='Donate',menu=donatefile)
         menu.add_cascade(label='Help',menu=helpfile)
+
         self.config(menu=menu)
 
         label_b = Label(self,text='Black Wikipedia',font=("None",25),bg='white',fg='black')
@@ -80,12 +84,17 @@ class black_wikipedia(Tk):
         self.bind("<Control-h>",lambda x: self.history_2(x))
         self.bind("<Control-o>",lambda x: self.open_f_2(x))
         self.bind("<Control-n>",lambda x: self.new_3(x))
+        self.bind("<Control-d>",lambda x: self.donate_2(x))
         self.photo = PhotoImage(file = './Scr/black.png')
         self.iconphoto(False,self.photo)
         self.mainloop()
     def clear_history(self):
         search_b.delete(0,END)
         file_h = open("./Core/history.txt","w").close()
+    def donate(self):
+        webbrowser.open_new_tab('https://idpay.ir/mrprogrammer2938')
+    def donate_2(self,x):
+        webbrowser.open_new_tab('https://idpay.ir/mrprogrammer2938')
     def do_popup(self,event):
         try:
             m.tk_popup(event.x_root, event.y_root)

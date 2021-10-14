@@ -360,15 +360,14 @@ class black_wikipedia(Tk):
             txt2.pack()
             r = wikipedia.summary(search_b.get(),sentences=1000)
             txt2.insert(END,str(r))
-            history_f_2 = open("history.txt","w")
-            history_f_2.append(str(search_b.get()    ))
+            history_f_2 = open("./Core/history.txt","a")
+            history_f_2.write(str(search_b.get()))
             history_f_2.close()
             txt2['state'] = 'disabled'
             window.config(menu=menu)
             window.bind("<Control-s>",lambda x: self.save_4(x))
             window.bind("<Control-o>",lambda x: self.open_f_3(x))
             window.bind("<Control-w",window.destroy)
-
             window.mainloop()
         except wikipedia.exceptions.WikipediaException:
             print(False)
@@ -387,7 +386,7 @@ class black_wikipedia(Tk):
             filemenu.add_command(label='New',accelerator='Ctrl+N',command=self.new)
             filemenu.add_command(label='Save',accelerator='Ctrl+S',command=self.save_2)
             filemenu.add_command(label='Open',accelerator='Ctrl+O',command=self.open_f)
-            filemenu.add_command(label='Close All',accelerator='Ctrl+W',command=self.close_all)
+            filemenu.add_command(label='Close All',accelerator='Ctrl+W',command=window.destroy)
             filemenu.add_separator()
             filemenu.add_command(label='Exit',accelerator='Alt+F4',command=self.ext)
             menu.add_cascade(label='File',menu=filemenu)
@@ -395,6 +394,9 @@ class black_wikipedia(Tk):
             txt2.pack()
             r = wikipedia.summary(search_b.get(),sentences=1000)
             txt2.insert(END,str(r))
+            history_f_3 = open("./Core/history.txt","a")
+            history_f_3.write(str(search_b.get()))
+            history_f_3.close()
             txt2['state'] = 'disabled'
             window.config(menu=menu)
             window.bind("<Control-n>",lambda x: self.new_3)

@@ -3,7 +3,6 @@
 import os
 import sys
 import webbrowser
-
 try:
     from tkinter import scrolledtext
     from tkinter import *
@@ -16,7 +15,6 @@ except (ImportError,ModuleNotFoundError):
     os.system("pip install tk-tools")
 try:
     import wikipedia
-    from wikipedia import exceptions
 except (ImportError,ModuleNotFoundError):
     os.system("pip install wikipedia")
 class black_wikipedia(Tk):
@@ -41,7 +39,8 @@ class black_wikipedia(Tk):
         themefile = Menu(menu,tearoff=0)
         filemenu.add_command(label='New',accelerator="Ctrl+N",command=self.new)
         filemenu.add_command(label='Open',accelerator="Ctrl+O",command=self.open_f)
-        filemenu.add_command(label='Close All',accelerator='Ctrl+F4',command=self.close_all)
+        filemenu.add_command(label='Close All',accelerator='Ctrl+F4',command=filemenu.destroy)
+        filemenu.add_command(label='Clear',command=self.clear_history)
         filemenu.add_separator()
         filemenu.add_command(label='Exit',accelerator='Alt+F4',command=self.ext)
         aboutmenu.add_command(label='Black',accelerator='F1',command=self.black)
@@ -78,6 +77,11 @@ class black_wikipedia(Tk):
         self.photo = PhotoImage(file = './Scr/black.png')
         self.iconphoto(False,self.photo)
         self.mainloop()
+    def clear_history(self):
+        search_b.delete(0,END)
+        history_f = open("history.txt","w")
+        history_f.write(" ")
+        history_f.close()
     def do_popup(self,event):
         try:
             m.tk_popup(event.x_root, event.y_root)
@@ -186,6 +190,54 @@ class black_wikipedia(Tk):
             file_s_2.write(str(txt.get("1.0",END)))
             file_s_2.close()
             c = True
+    def open_f_3(self,x):
+        global window,i,file,txt
+        file = filedialog.askopenfile(title='Select File',mode="r+")
+        i = True
+        window = Tk()
+        window.title(file.name)
+        menu = Menu(window)
+        filemenu = Menu(menu,tearoff=0)
+        filemenu.add_command(label='New',command=self.new)
+        filemenu.add_command(label='Save',command=self.save)
+        filemenu.add_command(label='Open',command=self.open_f)
+        filemenu.add_command(label='Close',command=window.destroy)
+        filemenu.add_separator()
+        filemenu.add_command(label='Exit',accelerator='Alt+F4',command=self.ext)
+        menu.add_cascade(label='File',menu=filemenu)
+        window.config(menu=menu)
+        window.geometry("500x400")
+        window.maxsize(700,700)
+        window.minsize(300,300)
+        txt = ScrolledText(window)
+        txt.pack()
+        txt['state'] = 'normal'
+        txt.insert(END,str(file.read()))
+        window.mainloop()
+    def open_f_2(self,x):
+        global window,i,file,txt
+        file = filedialog.askopenfile(title='Select File',mode="r+")
+        i = True
+        window = Tk()
+        window.title(file.name)
+        menu = Menu(window)
+        filemenu = Menu(menu,tearoff=0)
+        filemenu.add_command(label='New',command=self.new)
+        filemenu.add_command(label='Save',command=self.save)
+        filemenu.add_command(label='Open',command=self.open_f)
+        filemenu.add_command(label='Close',command=window.destroy)
+        filemenu.add_separator()
+        filemenu.add_command(label='Exit',accelerator='Alt+F4',command=self.ext)
+        menu.add_cascade(label='File',menu=filemenu)
+        window.config(menu=menu)
+        window.geometry("500x400")
+        window.maxsize(700,700)
+        window.minsize(300,300)
+        txt = ScrolledText(window)
+        txt.pack()
+        txt['state'] = 'normal'
+        txt.insert(END,str(file.read()))
+        window.mainloop()
     def open_f(self):
         global window,i,file,txt
         file = filedialog.askopenfile(title='Select File',mode="r+")
@@ -241,12 +293,24 @@ class black_wikipedia(Tk):
             file.close()
         else:
             file_s = filedialog.asksaveasfile(title='Save As')
+    def save_4(self,x):
+        global file_s
+        if i:
+            file.write(txt.get("1.0",END))
+            file.close()
+        else:
+            file_s = filedialog.asksaveasfile(title='Save As')
     def close_all(self):
         try:
             window.destroy()
         except TclError:
             print(False)
     def close_all_2(self,x):
+        try:
+            window.destroy()
+        except TclError:
+            print(False)
+    def close_all_3(self,x):
         try:
             window.destroy()
         except TclError:
@@ -269,6 +333,12 @@ class black_wikipedia(Tk):
         file_s.write(str(txt2.get("1.0",END)))
         file_s.close()
         i2 = True
+    def save_3(self,x):
+        global i2
+        file_s = filedialog.asksaveasfile(title='Save As')
+        file_s.write(str(txt2.get("1.0",END)))
+        file_s.close()
+        i2 = True
 
     def start(self):
         try:
@@ -280,10 +350,9 @@ class black_wikipedia(Tk):
             window.minsize(300,300)
             menu = Menu(window)
             filemenu = Menu(menu,tearoff=0)
-            filemenu.add_command(label='New',command=self.new)
-            filemenu.add_command(label='Save',command=self.save_2)
-            filemenu.add_command(label='Open',command=self.open_f)
-            filemenu.add_command(label='Close All',command=self.close_all)
+            filemenu.add_command(label='Save',accelerator='Ctrl+S',command=self.save_2)
+            filemenu.add_command(label='Open',accelerator='Ctrl+O',command=self.open_f)
+            filemenu.add_command(label='Close All',accelerator='Ctrl+W',command=self.close_all)
             filemenu.add_separator()
             filemenu.add_command(label='Exit',accelerator='Alt+F4',command=self.ext)
             menu.add_cascade(label='File',menu=filemenu)
@@ -291,10 +360,17 @@ class black_wikipedia(Tk):
             txt2.pack()
             r = wikipedia.summary(search_b.get(),sentences=1000)
             txt2.insert(END,str(r))
+            history_f_2 = open("history.txt","w")
+            history_f_2.append(str(search_b.get()    ))
+            history_f_2.close()
             txt2['state'] = 'disabled'
             window.config(menu=menu)
+            window.bind("<Control-s>",lambda x: self.save_4(x))
+            window.bind("<Control-o>",lambda x: self.open_f_3(x))
+            window.bind("<Control-w",window.destroy)
+
             window.mainloop()
-        except exceptions.WikipediaException:
+        except wikipedia.exceptions.WikipediaException:
             print(False)
             window.destroy()
             showerror(title='Cannot Search',message='Please, Check Input Key!')
@@ -308,10 +384,10 @@ class black_wikipedia(Tk):
             window.minsize(300,300)
             menu = Menu(window)
             filemenu = Menu(menu,tearoff=0)
-            filemenu.add_command(label='New',command=self.new)
-            filemenu.add_command(label='Save',command=self.save_2)
-            filemenu.add_command(label='Open',command=self.open_f)
-            filemenu.add_command(label='Close All',command=self.close_all)
+            filemenu.add_command(label='New',accelerator='Ctrl+N',command=self.new)
+            filemenu.add_command(label='Save',accelerator='Ctrl+S',command=self.save_2)
+            filemenu.add_command(label='Open',accelerator='Ctrl+O',command=self.open_f)
+            filemenu.add_command(label='Close All',accelerator='Ctrl+W',command=self.close_all)
             filemenu.add_separator()
             filemenu.add_command(label='Exit',accelerator='Alt+F4',command=self.ext)
             menu.add_cascade(label='File',menu=filemenu)
@@ -321,11 +397,16 @@ class black_wikipedia(Tk):
             txt2.insert(END,str(r))
             txt2['state'] = 'disabled'
             window.config(menu=menu)
+            window.bind("<Control-n>",lambda x: self.new_3)
+            window.bind("<Control-s>",lambda x: self.save_4(x))
+            window.bind("<Control-o>",lambda x: self.open_f_3(x))
+            window.bind("<Control-w",window.destroy)
+
             window.mainloop()
-        except exceptions.WikipediaException:
+        except wikipedia.exceptions.WikipediaException:
             print(False)
             window.destroy()
-            showerror(title='Cannot Search',message='Please, Check Input Key')
+            showerror(title='Cannot Search',message='Please, Check Input Key!')
     def dark(self):
         # window.config(bg='black')
         self.config(bg='black')
